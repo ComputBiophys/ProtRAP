@@ -1,5 +1,5 @@
 import numpy as np
-import argparse
+import argparse,os
 import pandas as pd
 from models import *
 def load_fasta(path):
@@ -23,16 +23,35 @@ if __name__=='__main__':
     argparser = argparse.ArgumentParser()
     argparser.add_argument('--device', default='cpu', help='pytorch device name, default cpu')
     argparser.add_argument('--data', default='prot', help='data path')
-    argparser.add_argument('--model_path',  help='model path')
+    argparser.add_argument('--ten_average',type=bool ,default=False)
     args=argparser.parse_args()
     seq=load_fasta(args.data+'.fasta')
     feat=load_feat(args.data+'.feat')
     seqv=seq2arr(seq)
     value=np.concatenate((seqv,feat[:,:20],feat[:,-3:]),axis=1)
 
-    model=torch.load(args.model_path,map_location=args.device) # or cuda
+    model_path=lambda x:'models/model_'+str(x)+'.pjit'
+    models=[]
+    for i in range(10):
+        if not os.path.exists(model_path(i)):
+            print('Downloading model_'+str(i))
+            url='https://github.com/ComputBiophys/ProtRA/releases/download/weights/model_'+str(i)+'.pjit'
+            import requests
+            r  = requests.get(url,stream=True)
+            with open (model_path(i),'wb') as f:
+                f.write(r.content)
+        model=torch.jit.load(os.path.join(os.getcwd(),model_path(i))).to(args.device)
+        models.append(model)
+        if not args.ten_average:
+            break
     model.eval()
     with torch.no_grad():
         value=torch.tensor(value, dtype=torch.float32).unsqueeze(0)
-        result=model(value)
-        result=result.numpy()[0,...]
+        results=[]
+        for model in models:
+            result=model(value)
+            result=result.numpy()[0,...]
+            results.append(result)
+    results=np.array(results)
+    results=np.mean(results,axis=0)
+    np.savetxt(args.data+'.csv',results,delimiter=',')

@@ -47,7 +47,11 @@ def length_pad(x):
 class pack_GRU(nn.Module):
     def __init__(self,input_dim,n_hidden=128,stack=3):
         super().__init__()
-        self.biRNN=nn.GRU(input_dim,n_hidden,stack,batch_first=True,dropout=1-keep_prob,bidirectional=True)
+        if stack >1:
+            dropout=1-keep_prob
+        else:
+            dropout=0
+        self.biRNN=nn.GRU(input_dim,n_hidden,stack,batch_first=True,dropout=dropout,bidirectional=True)
     def forward(self,x,length):
         pack_x=nn.utils.rnn.pack_padded_sequence(x,length.to('cpu'),batch_first=True,enforce_sorted=False)
         x,_=self.biRNN(pack_x)
@@ -79,13 +83,13 @@ class Transformer_light_Model(nn.Module):
         self.trans_conv=TransConv(input_dim, 48)
         self.drop=nn.Dropout(0.2)
         self.biRNN=pack_GRU(48*3,n_hidden,2)
-        encoder_layer=nn.TransformerEncoderLayer(d_model=attention_dim, nhead=4,batch_first=True)
+        encoder_layer=nn.TransformerEncoderLayer(d_model=attention_dim, nhead=4,activation='gelu',batch_first=True)
         self.encoder= nn.TransformerEncoder(encoder_layer,num_layers=2)
         self.biRNN2=pack_GRU(n_hidden*2+attention_dim,n_hidden,1)
         self.linear1=nn.Linear(n_hidden*2,attention_dim)
-        self.fc1=nn.Sequential(nn.Linear(n_hidden*2+attention_dim,196),nn.SELU(),nn.Dropout(0.3))
+        self.fc1=nn.Sequential(nn.Linear(n_hidden*2+attention_dim,196),nn.ReLU(),nn.Dropout(0.3))
         self.final_linear_stack=nn.Sequential(
-            nn.Linear(196,64),nn.SELU(),nn.Dropout(0.1),
+            nn.Linear(196,64),nn.ReLU(),nn.Dropout(0.1),
             nn.Linear(64,3),nn.Softmax(dim=-1)
         )
     def forward(self,x):
