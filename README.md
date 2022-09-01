@@ -1,6 +1,8 @@
-# ProtRA
-Predictor for lipid accessibility and solvent accessibility of proteins 
+# ProtRAP
+Deep learning based protein relative accessibility predictor to predict the relative lipid accessibility and relative solvent accessibility of residues from a given protein sequence
 ## Introduction
+Solvent accessibility has been extensively used to characterize and predict the chemical properties of the surface residues of soluble proteins. However, there is not yet a widely accepted quantity of the same dimension for the study of lipid-accessible residues of membrane proteins. In this study, we propose that lipid accessibility, defined in a similar way to solvent accessibility, can be used to characterize the lipid accessible residues of membrane proteins.
+
 In models.py, we provide the definition and implementation of the final model (Transformer light) and other models in the article.
 
 driver.py is a simple demonstration of how to process input data and process models
