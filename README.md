@@ -1,7 +1,9 @@
 # ProtRAP
 Deep learning based protein relative accessibility predictor to predict the relative lipid accessibility and relative solvent accessibility of residues from a given protein sequence
 ## Introduction
-Solvent accessibility has been extensively used to characterize and predict the chemical properties of the surface residues of soluble proteins. However, there is not yet a widely accepted quantity of the same dimension for the study of lipid-accessible residues of membrane proteins. In this study, we propose that lipid accessibility, defined in a similar way to solvent accessibility, can be used to characterize the lipid accessible residues of membrane proteins.
+Solvent accessibility has been extensively used to characterize and predict the chemical properties of the surface residues of soluble proteins. However, there is not yet a widely accepted quantity of the same dimension for the study of lipid-accessible residues of membrane proteins. Here we propose that lipid accessibility, defined in a similar way to solvent accessibility, can be used to characterize the lipid accessible residues of membrane proteins. [Details can be found here](https://chemrxiv.org/engage/chemrxiv/article-details/6305cbd0f07ee1b928efade2)
+
+![TopOfContent](https://github.com/ComputBiophys/ProtRAP/releases/download/weights/TopOfContent.png)
 
 In models.py, we provide the definition and implementation of the final model (Transformer light) and other models in the article.
 
@@ -11,7 +13,7 @@ prot.feat, prot.fasta are example files
 ### Quick start
 We provide a prediction server to meet researchers' small batch sample prediction needs.
   
-  http://www.songlab.cn/ProtRA/Introduction/
+  http://www.songlab.cn/ProtRAP/Introduction/
 ### Requirements
 * PyTorch
 * NumPy
