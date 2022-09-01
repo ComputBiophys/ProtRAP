@@ -5,7 +5,7 @@ Solvent accessibility has been extensively used to characterize and predict the 
 
 ![TopOfContent](https://github.com/ComputBiophys/ProtRAP/releases/download/weights/TopOfContent.png)
 
-In models.py, we provide the definition and implementation of the final model (Transformer light) and other models in the article.
+In models.py, we provide the definition and implementation of the final model (Transformer light).
 
 driver.py is a simple demonstration of how to process input data and process models
 

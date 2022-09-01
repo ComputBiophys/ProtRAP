@@ -75,7 +75,6 @@ class Basic_Model(nn.Module):
         x=self.final_linear_stack(x)
         return x 
 
-models_name_dict={}
 class Transformer_light_Model(nn.Module):
     def __init__(self,input_dim=43,n_hidden=128):
         super().__init__()
@@ -89,7 +88,7 @@ class Transformer_light_Model(nn.Module):
         self.linear1=nn.Linear(n_hidden*2,attention_dim)
         self.fc1=nn.Sequential(nn.Linear(n_hidden*2+attention_dim,196),nn.ReLU(),nn.Dropout(0.3))
         self.final_linear_stack=nn.Sequential(
-            nn.Linear(196,64),nn.ReLU(),nn.Dropout(0.1),
+            nn.Linear(196,64),nn.ReLU(),nn.Dropout(1-keep_prob),
             nn.Linear(64,3),nn.Softmax(dim=-1)
         )
     def forward(self,x):
@@ -105,67 +104,3 @@ class Transformer_light_Model(nn.Module):
         x=self.fc1(x)
         x=self.final_linear_stack(x)
         return x
-models_name_dict['Transformer_light']=Transformer_light_Model
-
-class Pad_Model(nn.Module):
-    def __init__(self,input_dim=43,n_hidden=128):
-        super().__init__()
-        self.trans_conv=TransConv(input_dim, 48)
-        self.biRNN=pack_GRU(48*3,128)
-        self.biRNN2=pack_GRU(256,128,1)
-        self.final_linear_stack=nn.Sequential(
-            nn.Linear(n_hidden*2,144),nn.SELU(),
-            nn.Linear(144,32),nn.SELU(),
-            nn.Linear(32,3),nn.Softmax(dim=-1)
-        )
-
-    def forward(self,x):
-        lengths=get_length(x)
-        x=self.trans_conv(x)
-        x=self.biRNN(x,lengths)
-        x2=self.biRNN2(x,lengths)
-        x=self.final_linear_stack(x+x2)
-        return x 
-models_name_dict['Pad']=Pad_Model
-
-class Pad3_Model(nn.Module):
-    def __init__(self,input_dim=43,n_hidden=128):
-        super().__init__()
-        self.trans_conv=TransConv(input_dim, 48)
-        self.biRNN=pack_GRU(48*3,128)
-        self.biRNN2=pack_GRU(256,128,3)
-        self.final_linear_stack=nn.Sequential(
-            nn.Linear(n_hidden*2,144),nn.SELU(),
-            nn.Linear(144,32),nn.SELU(),
-            nn.Linear(32,3),nn.Softmax(dim=-1)
-        )
-
-    def forward(self,x):
-        lengths=get_length(x)
-        x=self.trans_conv(x)
-        x=self.biRNN(x,lengths)
-        x2=self.biRNN2(x,lengths)
-        x=self.final_linear_stack(x+x2)
-        return x 
-models_name_dict['Pad3']=Pad3_Model
-
-class Pad5_Model(nn.Module):
-    def __init__(self,input_dim=43,n_hidden=128):
-        super().__init__()
-        self.trans_conv=TransConv(input_dim, 48)
-        self.biRNN=pack_GRU(48*3,128)
-        self.biRNN2=pack_GRU(256,128,5)
-        self.final_linear_stack=nn.Sequential(
-            nn.Linear(n_hidden*2,144),nn.SELU(),
-            nn.Linear(144,32),nn.SELU(),
-            nn.Linear(32,3),nn.Softmax(dim=-1)
-        )
-
-    def forward(self,x):
-        lengths=get_length(x)
-        x=self.trans_conv(x)
-        x=self.biRNN(x,lengths)
-        x2=self.biRNN2(x,lengths)
-        x=self.final_linear_stack(x+x2)
-        return x 
-models_name_dict['Pad5']=Pad5_Model
