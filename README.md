@@ -36,3 +36,6 @@ It can also download ten models trained by the ten-fold cross validation, and ta
 ```bash
 python driver.py --data prot --ten_average True 
 ```
+## Reference
+
+Kang, K., Wang, L., & Song, C. (2023). [ProtRAP: Predicting Lipid Accessibility Together with Solvent Accessibility of Proteins in One Run](https://doi.org/10.1021/acs.jcim.2c01235). _Journal of chemical information and modeling_.
