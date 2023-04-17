@@ -29,13 +29,19 @@ First download the weights file we provided in Releases. Then use `torch.load(ab
 
 Our driver.py provides easier usage. It can automatically process data, download models:
 ```bash
-python driver.py --data prot 
+python driver.py  --input_path prot 
 ```
 
 It can also download ten models trained by the ten-fold cross validation, and taking the average predicted value to achieve a more stable result.
 ```bash
-python driver.py --data prot --ten_average True 
+python driver.py  --input_path prot --ten_average True 
 ```
+
+To predict the output for all files in a directory:
+```bash
+python driver.py  --input_path <path_to_input_directory> --input_type dir --ten_average True 
+```
+
 ## Reference
 
 Kang, K., Wang, L., & Song, C. (2023). [ProtRAP: Predicting Lipid Accessibility Together with Solvent Accessibility of Proteins in One Run](https://doi.org/10.1021/acs.jcim.2c01235). _Journal of chemical information and modeling_.

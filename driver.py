@@ -41,23 +41,20 @@ def calculate(models,value):
 
 if __name__=='__main__':
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--device', default='cpu', help='pytorch device name, default cpu')
     argparser.add_argument('--input_path', default='prot', help='input data path')
     argparser.add_argument('--input_type', default='file', help='file or dir')
     argparser.add_argument('--ten_average',type=bool ,default=False)
     args=argparser.parse_args()
 
+    device=torch.device('cpu')
     model_path=lambda x:'models/model_'+str(x)+'.pjit'
     models=[]
     for i in range(10):
         if not os.path.exists(model_path(i)):
             print('Downloading model_'+str(i))
             url=github_url+str(i)+'.pjit'
-            import requests
-            r  = requests.get(url,stream=True)
-            with open (model_path(i),'wb') as f:
-                f.write(r.content)
-        model=torch.jit.load(os.path.join(os.getcwd(),model_path(i))).to(args.device).eval()
+            os.system('wget '+url+' -O '+model_path(i))
+        model=torch.jit.load(os.path.join(os.getcwd(),model_path(i))).to(device).eval()
         models.append(model)
         if not args.ten_average:
             break
